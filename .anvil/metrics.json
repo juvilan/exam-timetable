@@ -1,0 +1,28 @@
+{
+  "sessions": [
+    {
+      "taskId": "T01",
+      "agent": null,
+      "durationMs": 109200,
+      "exitCode": 0,
+      "timestamp": "2026-03-27T05:07:27.539Z"
+    },
+    {
+      "taskId": "T02",
+      "agent": null,
+      "durationMs": 107684,
+      "exitCode": 0,
+      "timestamp": "2026-03-27T05:08:08.831Z"
+    },
+    {
+      "taskId": "T03",
+      "agent": null,
+      "durationMs": 143904,
+      "exitCode": 0,
+      "timestamp": "2026-03-27T05:08:45.049Z"
+    }
+  ],
+  "totalSessions": 3,
+  "totalDurationMs": 360788,
+  "startedAt": "2026-03-27T05:07:27.539Z"
+}
