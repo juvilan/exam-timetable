@@ -1,0 +1,200 @@
+.layout {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.gridWrap {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+}
+
+.grid {
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.cornerCell {
+  width: 100px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.dayHeader {
+  min-width: 120px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  padding: 8px 12px;
+  text-align: center;
+}
+.dayHeaderInner { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.dayNum   { font-size: 13px; font-weight: 700; }
+.dayDate  { font-size: 11px; color: var(--text-muted); }
+
+.arrivalRow td { border: 1px solid var(--border); }
+.arrivalCell {
+  text-align: center;
+  padding: 6px;
+}
+.arrivalTime { font-size: 11px; color: #92400e; font-weight: 600; }
+
+.rowLabel {
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  min-width: 90px;
+  text-align: right;
+  background: var(--bg);
+  vertical-align: top;
+}
+.gradeBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.arrivalLabel { display: block; font-size: 10px; color: var(--text-muted); }
+.periodLabel  { display: block; font-size: 12px; font-weight: 600; color: var(--text); }
+.timeLabel    { display: block; font-size: 10px; color: var(--text-muted); }
+
+.slotRow td { border: 1px solid var(--border); }
+
+.invalidCell {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--bg),
+    var(--bg) 5px,
+    #f1f5f9 5px,
+    #f1f5f9 10px
+  );
+}
+
+.dropCell {
+  padding: 4px;
+  height: 72px;
+  vertical-align: middle;
+  transition: background 0.1s;
+}
+.dropCellOver { background: #eff6ff; }
+.dropCellWarn { background: #fff7ed; }
+
+.emptyCell {
+  width: 100%;
+  height: 100%;
+  min-height: 60px;
+  border-radius: 5px;
+  border: 1px dashed #d1d5db;
+}
+
+.cellCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 7px;
+  border-radius: 6px;
+  background: white;
+  border: 2px solid #bfdbfe;
+  cursor: grab;
+  height: 100%;
+  min-height: 60px;
+  position: relative;
+  transition: box-shadow 0.1s;
+  user-select: none;
+}
+.cellCard:hover { box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+.cellCardDragging { opacity: 0.3; }
+
+.cellLabel { font-size: 12px; font-weight: 600; text-align: center; word-break: keep-all; }
+
+.groupTypeBadge {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-top: 2px;
+}
+.groupTypeBadge[data-gtype='elective']    { background: #ede9fe; color: #5b21b6; }
+.groupTypeBadge[data-gtype='class_split'] { background: #fef3c7; color: #92400e; }
+.groupTypeBadge[data-gtype='culture']     { background: #fce7f3; color: #9d174d; }
+
+.warnIcon { font-size: 10px; position: absolute; top: 3px; left: 4px; }
+
+.clearBtn {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  color: #94a3b8;
+  padding: 2px;
+  border-radius: 3px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.cellCard:hover .clearBtn { opacity: 1; }
+.clearBtn:hover { background: #fee2e2; color: var(--danger); }
+
+/* 팔레트 */
+.palette {
+  width: 180px;
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+  overflow-y: auto;
+  padding: 12px;
+  flex-shrink: 0;
+}
+.paletteTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.paletteGradeLabel {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 6px;
+  border-radius: 4px;
+  margin: 6px 0 4px;
+}
+.paletteGradeLabel[data-grade='1'] { background: #FFF9C4; color: #F57F17; }
+.paletteGradeLabel[data-grade='2'] { background: #E3F2FD; color: #1565C0; }
+.paletteGradeLabel[data-grade='3'] { background: #E8F5E9; color: #2E7D32; }
+
+.paletteCard {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  cursor: grab;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: box-shadow 0.1s, background 0.1s;
+}
+.paletteCard:hover { background: #eff6ff; border-color: #bfdbfe; }
+.paletteCardDragging { opacity: 0.3; }
+
+.paletteConcentrated { font-size: 10px; color: var(--text-muted); }
+
+/* 드래그 오버레이 */
+.dragOverlay {
+  padding: 8px 14px;
+  background: white;
+  border: 2px solid var(--primary);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  pointer-events: none;
+}
