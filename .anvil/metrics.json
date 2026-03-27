@@ -20,9 +20,16 @@
       "durationMs": 143904,
       "exitCode": 0,
       "timestamp": "2026-03-27T05:08:45.049Z"
+    },
+    {
+      "taskId": "T04",
+      "agent": null,
+      "durationMs": 98899,
+      "exitCode": 0,
+      "timestamp": "2026-03-27T05:11:24.661Z"
     }
   ],
-  "totalSessions": 3,
-  "totalDurationMs": 360788,
+  "totalSessions": 4,
+  "totalDurationMs": 459687,
   "startedAt": "2026-03-27T05:07:27.539Z"
 }
