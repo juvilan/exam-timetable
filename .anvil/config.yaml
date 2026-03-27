@@ -1,0 +1,21 @@
+version: 1
+
+forge:
+  path: ~/.claude
+
+project:
+  name: exam-timetable
+  taskTimeout: 300000
+  maxTurns: 10
+
+safety:
+  maxRetries: 3
+  maxTotalSessions: 50
+
+verification:
+  enabled: true
+  autoFix: true
+  ironLaw: true
+
+git:
+  autoCommit: true
