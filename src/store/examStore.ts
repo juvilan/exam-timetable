@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type {
   ExamSession, Subject, SubjectGroup, GridCell, CellContent,
-  DayConfig, GradeConfig, SlotConfig, GaImportData,
+  DayConfig, GradeConfig, SlotConfig, GaImportData, GradeMatrix,
 } from '../types';
 import { genId } from '../utils/id';
 import { createDefaultExamSession, defaultGradeConfig, defaultSlots, isSubjectActive } from '../utils/examDefaults';
@@ -63,6 +63,9 @@ interface ExamStore {
 
   // ── GA 가져오기 ───────────────────────────────────────────
   applyGaOrder: (sessionId: string, data: GaImportData) => void;
+
+  // ── 학생-과목 행렬 (GA 최적화용) ──────────────────────────
+  setGradeMatrix: (sessionId: string, matrix: GradeMatrix) => void;
 
   // ── JSON 내보내기/가져오기 ────────────────────────────────
   exportSession: (id: string) => string;
@@ -460,6 +463,18 @@ export const useExamStore = create<ExamStore>()(
 
             return { ...s, grid };
           }),
+        }));
+      },
+
+      setGradeMatrix: (sessionId, matrix) => {
+        set(state => ({
+          sessions: updateSessionInList(state.sessions, sessionId, s => ({
+            ...s,
+            gradeMatrices: {
+              ...s.gradeMatrices,
+              [String(matrix.grade)]: matrix,
+            },
+          })),
         }));
       },
 

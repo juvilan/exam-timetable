@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useExamStore } from '../../store/examStore';
 import type { ExamSession, Subject, SubjectGroup, GaImportData } from '../../types';
 import { isSubjectActive } from '../../utils/examDefaults';
+import { parseSubjectExcel, parseGaResultExcel, parseTimetableSheet } from '../../utils/xlsxImport';
 import styles from './SubjectPanel.module.css';
 
 interface Props {
@@ -37,6 +38,81 @@ export function SubjectPanel({ session }: Props) {
     });
     setNewSubjectName('');
     setAddingGrade(null);
+  }
+
+  function handleSubjectExcelImport() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx,.xls';
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const buf = ev.target!.result as ArrayBuffer;
+          const { grade, subjectNames, studentCount } = parseSubjectExcel(buf);
+          const existing = session.subjects.filter(s => s.grade === grade).map(s => s.name);
+          const toAdd = subjectNames.filter(n => !existing.includes(n));
+          if (toAdd.length === 0) {
+            alert(`${grade}학년 과목이 이미 모두 등록되어 있습니다.`);
+            return;
+          }
+          if (confirm(`${grade}학년 과목 ${toAdd.length}개를 추가하겠습니까?\n(학생수 ${studentCount}명 감지)\n\n${toAdd.join(', ')}`)) {
+            toAdd.forEach(name => addSubject(session.id, { name, grade, examScope: 'both', groupId: null }));
+          }
+        } catch (err) {
+          alert(`가져오기 실패: ${(err as Error).message}`);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    };
+    input.click();
+  }
+
+  function handleGaExcelImport() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx,.xls';
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const buf = ev.target!.result as ArrayBuffer;
+          // 먼저 시험시간표 시트 시도
+          const cells = parseTimetableSheet(buf);
+          if (cells.length > 0) {
+            const data: GaImportData = {
+              order: cells.map(c => c.subjectName),
+              periodCodeMap: Object.fromEntries(cells.map(c => [c.subjectName, String((c.dayIndex + 1) * 10 + (c.slotIndex + 1))])),
+            };
+            if (confirm(`시험시간표 시트에서 ${cells.length}개 배치를 발견했습니다.\n적용하겠습니까?`)) {
+              applyGaOrder(session.id, data);
+            }
+            return;
+          }
+          // 시험_교시코드 시트 시도
+          const gaRows = parseGaResultExcel(buf);
+          if (gaRows.length === 0) {
+            alert('교시코드 데이터를 찾을 수 없습니다.\n시험_교시코드 또는 시험시간표 시트가 있는 파일을 선택하세요.');
+            return;
+          }
+          const data: GaImportData = {
+            order: gaRows.map(r => r.subjectName),
+            periodCodeMap: Object.fromEntries(gaRows.map(r => [r.subjectName, String(r.periodCode)])),
+          };
+          if (confirm(`${gaRows.length}개 과목의 교시코드를 적용하겠습니까?\n\n${gaRows.map(r => `${r.subjectName}→${r.periodCode}`).join(', ')}`)) {
+            applyGaOrder(session.id, data);
+          }
+        } catch (err) {
+          alert(`가져오기 실패: ${(err as Error).message}`);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    };
+    input.click();
   }
 
   function handleGaImport() {
@@ -90,6 +166,12 @@ export function SubjectPanel({ session }: Props) {
       {/* 과목 탭 */}
       {tab === 'subjects' && (
         <div className={styles.tabContent}>
+          <button className={styles.xlsxImportBtn} onClick={handleSubjectExcelImport}>
+            📥 선택과목 Excel 가져오기
+          </button>
+          <p className={styles.xlsxImportDesc}>
+            형식: 1행=헤더(학년/반/번호/이름/과목…), 2행~=학생데이터
+          </p>
           {grades.map(grade => {
             const gradeSubjects = session.subjects.filter(s => s.grade === grade);
             return (
@@ -178,16 +260,22 @@ export function SubjectPanel({ session }: Props) {
       {/* GA 탭 */}
       {tab === 'ga' && (
         <div className={styles.tabContent}>
+          <button className={styles.xlsxImportBtn} onClick={handleGaExcelImport}>
+            📥 가안 Excel에서 배치 가져오기
+          </button>
+          <p className={styles.xlsxImportDesc}>
+            시험_교시코드 또는 시험시간표 시트가 있는 가안 파일 선택
+          </p>
+          <div className={styles.gaDivider}>또는 직접 입력</div>
           <p className={styles.gaDesc}>
-            GAS에서 내보낸 결과를 붙여넣으세요.<br/>
-            <code>과목명,교시코드</code> 형식 또는 JSON periodCodeMap
+            <code>과목명,교시코드</code> 형식 (11=1일차1교시, 23=2일차3교시)
           </p>
           <textarea
             className={styles.gaTextarea}
             value={gaText}
             onChange={e => setGaText(e.target.value)}
             placeholder={`예시:\n수학Ⅰ,11\n영어Ⅰ,12\n물리학Ⅰ,21`}
-            rows={10}
+            rows={8}
           />
           <button className={styles.gaImportBtn} onClick={handleGaImport}>
             GA 결과 적용

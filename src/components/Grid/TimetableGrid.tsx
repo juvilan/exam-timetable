@@ -1,9 +1,9 @@
+import React, { useState } from 'react';
 import {
   DndContext, DragOverlay,
   PointerSensor, useSensor, useSensors, useDroppable, useDraggable,
 } from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
-import { useState } from 'react';
 import { useExamStore } from '../../store/examStore';
 import type { ExamSession, GridCell, CellContent, Subject, SubjectGroup } from '../../types';
 import { isSubjectActive } from '../../utils/examDefaults';
@@ -158,7 +158,7 @@ export function TimetableGrid({ session }: Props) {
                 const color = GRADE_COLORS[gradeConfig.grade];
 
                 return (
-                  <>
+                  <React.Fragment key={gi}>
                     {/* 시차등교 행 */}
                     {gradeConfig.arrivalTime && (
                       <tr key={`arrival-${gi}`} className={styles.arrivalRow}>
@@ -216,7 +216,7 @@ export function TimetableGrid({ session }: Props) {
                         </tr>
                       );
                     })}
-                  </>
+                  </React.Fragment>
                 );
               })}
             </tbody>

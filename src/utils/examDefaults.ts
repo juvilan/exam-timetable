@@ -41,18 +41,19 @@ export function createDefaultExamSession(
   );
 
   return {
-    id:         genId('exam'),
+    id:           genId('exam'),
     title,
     schoolYear,
     semester,
     examType,
     grades,
     days,
-    subjects:   [],
-    groups:     [],
-    grid:       [],
-    createdAt:  now,
-    updatedAt:  now,
+    subjects:     [],
+    groups:       [],
+    grid:         [],
+    gradeMatrices: {},
+    createdAt:    now,
+    updatedAt:    now,
   };
 }
 

@@ -1,0 +1,237 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.header {}
+.title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: var(--text);
+}
+.desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 학년별 데이터 행 */
+.gradeRows { display: flex; flex-direction: column; gap: 8px; }
+.gradeRow {
+  display: grid;
+  grid-template-columns: 40px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: 7px;
+  border: 1px solid var(--border);
+}
+.gradeLabel {
+  font-size: 13px;
+  font-weight: 700;
+}
+.gradeLabel[data-grade="2"] { color: #1565C0; }
+.gradeLabel[data-grade="3"] { color: #2E7D32; }
+
+.gradeInfo { font-size: 12px; }
+.matrixReady  { color: #166534; }
+.matrixMissing { color: var(--text-muted); }
+
+.importBtn {
+  padding: 5px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  background: var(--surface);
+  white-space: nowrap;
+}
+.importBtn:hover { background: var(--bg-hover, #f5f5f5); }
+
+.applyBtn {
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+  white-space: nowrap;
+}
+.applyBtn:hover { opacity: 0.85; }
+
+/* 진행률 */
+.progressArea { display: flex; flex-direction: column; gap: 8px; }
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.progressBar {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progressFill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.progressPct { min-width: 34px; text-align: right; }
+.score { color: var(--text-muted); min-width: 80px; }
+
+/* 결과 */
+.resultArea { display: flex; flex-direction: column; gap: 12px; }
+.resultBlock {
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  background: #f0fdf4;
+  padding: 12px;
+}
+.resultHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #166534;
+}
+.resultScore { font-size: 12px; color: #166534; font-weight: 400; }
+
+.timetablePreview {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  overflow-x: auto;
+}
+.dayCol {
+  flex: 1;
+  min-width: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.dayColHeader {
+  font-size: 11px;
+  font-weight: 600;
+  color: #166534;
+  text-align: center;
+  padding: 3px;
+  background: #dcfce7;
+  border-radius: 4px;
+}
+.dayColCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #d1fae5;
+  min-height: 40px;
+  justify-content: center;
+}
+.periodNum { font-size: 10px; color: #6b7280; }
+.subjectName { font-size: 11px; font-weight: 600; color: #1f2937; text-align: center; }
+
+.applyBtnLarge {
+  width: 100%;
+  padding: 8px;
+  background: #166534;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+.applyBtnLarge:hover { background: #14532d; }
+
+/* 오류 */
+.error {
+  padding: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #dc2626;
+}
+
+/* 컨트롤 */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+.genLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.genInput {
+  width: 70px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 12px;
+}
+.runBtn {
+  flex: 1;
+  padding: 9px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+.runBtn:hover:not(:disabled) { opacity: 0.85; }
+.runBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.stopBtn {
+  flex: 1;
+  padding: 9px;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+.stopBtn:hover { background: #b91c1c; }
+
+/* 다음 단계 안내 */
+.nextStep {
+  padding: 12px 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #1e40af;
+}
+.nextStep strong { display: block; margin-bottom: 8px; font-size: 13px; }
+.nextStepList {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 2;
+}
+.nextStepList li { color: #1e3a8a; }

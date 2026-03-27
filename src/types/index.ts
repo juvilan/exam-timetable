@@ -60,6 +60,17 @@ export type GridCell = {
   content: CellContent | null;
 };
 
+/**
+ * GA 최적화에 필요한 학생-과목 행렬 (학년별)
+ * 선택과목 Excel에서 파싱해서 저장
+ */
+export type GradeMatrix = {
+  grade: 1 | 2 | 3;
+  subjectNames: string[];   // 과목명 목록 (열 순서)
+  matrix: number[][];       // [studentIdx][subjectIdx] = 0|1
+  studentCount: number;
+};
+
 /** 고사 단위 (최상위) */
 export type ExamSession = {
   id: string;
@@ -72,6 +83,7 @@ export type ExamSession = {
   subjects: Subject[];
   groups: SubjectGroup[];
   grid: GridCell[];
+  gradeMatrices: Partial<Record<string, GradeMatrix>>; // key = grade ("2", "3")
   createdAt: string;
   updatedAt: string;
 };
