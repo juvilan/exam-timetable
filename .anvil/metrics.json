@@ -27,9 +27,30 @@
       "durationMs": 98899,
       "exitCode": 0,
       "timestamp": "2026-03-27T05:11:24.661Z"
+    },
+    {
+      "taskId": "T01",
+      "agent": null,
+      "durationMs": 60927,
+      "exitCode": 0,
+      "timestamp": "2026-03-27T05:12:40.863Z"
+    },
+    {
+      "taskId": "T02",
+      "agent": null,
+      "durationMs": 66071,
+      "exitCode": 0,
+      "timestamp": "2026-03-27T05:13:33.874Z"
+    },
+    {
+      "taskId": "T03",
+      "agent": null,
+      "durationMs": 108484,
+      "exitCode": 0,
+      "timestamp": "2026-03-27T05:14:16.276Z"
     }
   ],
-  "totalSessions": 4,
-  "totalDurationMs": 459687,
+  "totalSessions": 7,
+  "totalDurationMs": 695169,
   "startedAt": "2026-03-27T05:07:27.539Z"
 }
