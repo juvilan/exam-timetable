@@ -34,6 +34,7 @@ export type Subject = {
   examScope: 'both' | 'mid_only' | 'final_only' | 'none';
   groupId: string | null;
   concentratedClass?: ConcentratedClass | null;
+  durationMin?: number;   // 시험 시간 (분), 미설정 시 슬롯 기본값 사용
 };
 
 /** 병렬 배치 그룹 타입 */
@@ -64,11 +65,38 @@ export type GridCell = {
  * GA 최적화에 필요한 학생-과목 행렬 (학년별)
  * 선택과목 Excel에서 파싱해서 저장
  */
+export type StudentRecord = {
+  homeroom: number;   // 원반 (담임반)
+  number: number;     // 반 내 번호
+  name: string;
+};
+
 export type GradeMatrix = {
   grade: 1 | 2 | 3;
   subjectNames: string[];   // 과목명 목록 (열 순서)
   matrix: number[][];       // [studentIdx][subjectIdx] = 0|1
   studentCount: number;
+  students?: StudentRecord[]; // 학생 정보 (반/번호/이름)
+};
+
+/** 응시반 배정 결과 */
+export type SeatedStudent = {
+  seatNumber: number;   // 응시반 내 번호
+  homeroom: number;
+  number: number;
+  name: string;
+  subjectFlags: number[]; // [subjectIdx] = 0|1, GradeMatrix.subjectNames 순서
+};
+
+export type SeatingRoom = {
+  roomNumber: number;
+  seats: SeatedStudent[];
+};
+
+export type SeatingResult = {
+  grade: 1 | 2 | 3;
+  rooms: SeatingRoom[];
+  subjectNames: string[]; // GradeMatrix.subjectNames 복사
 };
 
 /** 고사 단위 (최상위) */
@@ -84,6 +112,7 @@ export type ExamSession = {
   groups: SubjectGroup[];
   grid: GridCell[];
   gradeMatrices: Partial<Record<string, GradeMatrix>>; // key = grade ("2", "3")
+  seatingResults?: Partial<Record<string, SeatingResult>>; // key = grade ("2", "3")
   createdAt: string;
   updatedAt: string;
 };

@@ -1,15 +1,38 @@
 import type { ExamSession, GradeConfig, SlotConfig, DayConfig } from '../types';
 import { genId } from './id';
 
-/** 기본 교시 설정 (5교시) */
+/** 기본 교시 시작시간 (전 학년 공통, 최대 4교시) */
+export const DEFAULT_PERIOD_TIMES = [
+  { period: 1, startTime: '09:10', durationMin: 50 },
+  { period: 2, startTime: '10:30', durationMin: 50 },
+  { period: 3, startTime: '13:00', durationMin: 50 },
+  { period: 4, startTime: '14:10', durationMin: 50 },
+];
+
+function addMinutes(time: string, mins: number): string {
+  const [h, m] = time.split(':').map(Number);
+  const total = h * 60 + m + mins;
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+}
+
+/** 교시 수로 SlotConfig 배열 생성 (DEFAULT_PERIOD_TIMES 기반) */
+export function makeSlotConfigs(periodCount: number): SlotConfig[] {
+  return DEFAULT_PERIOD_TIMES.slice(0, Math.min(periodCount, 4)).map(p => ({
+    period: p.period,
+    startTime: p.startTime,
+    endTime: addMinutes(p.startTime, p.durationMin),
+    durationMin: p.durationMin,
+  }));
+}
+
+/** 학년별 기본 슬롯: 1학년 = 1교시, 2/3학년 = 2교시 */
+export function defaultSlotsForGrade(grade: 1 | 2 | 3): SlotConfig[] {
+  return makeSlotConfigs(grade === 1 ? 1 : 2);
+}
+
+/** 하위 호환용 */
 export function defaultSlots(): SlotConfig[] {
-  return [
-    { period: 1, startTime: '08:40', endTime: '09:30', durationMin: 50 },
-    { period: 2, startTime: '09:50', endTime: '10:40', durationMin: 50 },
-    { period: 3, startTime: '11:00', endTime: '11:50', durationMin: 50 },
-    { period: 4, startTime: '13:00', endTime: '13:50', durationMin: 50 },
-    { period: 5, startTime: '14:10', endTime: '15:00', durationMin: 50 },
-  ];
+  return makeSlotConfigs(2);
 }
 
 /** 학년별 기본 GradeConfig 생성 */
@@ -17,7 +40,7 @@ export function defaultGradeConfig(grade: 1 | 2 | 3, dayCount: number): GradeCon
   return {
     grade,
     arrivalTime: grade === 1 ? '10:30' : null,
-    slotConfigs: Array.from({ length: dayCount }, () => defaultSlots()),
+    slotConfigs: Array.from({ length: dayCount }, () => defaultSlotsForGrade(grade)),
   };
 }
 

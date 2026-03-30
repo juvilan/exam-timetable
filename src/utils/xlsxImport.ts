@@ -23,7 +23,7 @@ export function parseSubjectExcel(buffer: ArrayBuffer): SubjectImportResult {
 
 /**
  * 선택과목 Excel 전체 파싱 (GA용 학생-과목 행렬 포함)
- * 반환: GradeMatrix (grade, subjectNames, matrix, studentCount)
+ * 반환: GradeMatrix (grade, subjectNames, matrix, studentCount, students)
  */
 export function parseSubjectMatrix(buffer: ArrayBuffer): GradeMatrix {
   const wb = XLSX.read(buffer, { type: 'array' });
@@ -40,12 +40,22 @@ export function parseSubjectMatrix(buffer: ArrayBuffer): GradeMatrix {
   const grade = ([1, 2, 3].includes(gradeRaw) ? gradeRaw : 2) as 1 | 2 | 3;
 
   const dataRows = rows.slice(1).filter(r => r && (r as unknown[])[0]);
+
+  const students = dataRows.map(row => {
+    const r = row as (string | number)[];
+    return {
+      homeroom: Number(r[1]),
+      number:   Number(r[2]),
+      name:     String(r[3] ?? '').trim(),
+    };
+  });
+
   const matrix = dataRows.map(row => {
     const r = row as (string | number)[];
     return subjectNames.map((_, si) => (Number(r[4 + si]) === 1 ? 1 : 0));
   });
 
-  return { grade, subjectNames, matrix, studentCount: dataRows.length };
+  return { grade, subjectNames, matrix, studentCount: dataRows.length, students };
 }
 
 /**

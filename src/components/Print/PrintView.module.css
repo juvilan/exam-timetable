@@ -1,6 +1,6 @@
 .printWrap {
   padding: 20px;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -10,44 +10,89 @@
 .printTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 12px;
 }
 
-.thCorner, .thDay {
-  border: 1.5px solid #444;
-  padding: 8px 10px;
-  background: #f8fafc;
+.thCorner {
+  border: 1.5px solid #555;
+  padding: 6px 8px;
+  background: #f1f5f9;
   font-weight: 700;
   text-align: center;
+  vertical-align: middle;
   white-space: pre-line;
+  font-size: 11px;
+  min-width: 70px;
 }
 
-.tdRowHeader {
-  border: 1.5px solid #444;
+.thGrade {
+  border: 1.5px solid #555;
+  padding: 6px 10px;
+  font-weight: 700;
+  text-align: center;
+  font-size: 13px;
+}
+
+.thSub {
+  border: 1.5px solid #555;
+  padding: 4px 6px;
+  background: #f8fafc;
+  font-weight: 600;
+  text-align: center;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.tdDate {
+  border: 1.5px solid #555;
   padding: 6px 8px;
   text-align: center;
+  vertical-align: middle;
   background: #f8fafc;
-  white-space: nowrap;
-  min-width: 90px;
-}
-.periodInfo { font-size: 12px; margin-top: 2px; }
-.timeInfo   { display: block; font-size: 10px; color: #555; }
-
-.tdCell {
-  border: 1.5px solid #444;
-  padding: 8px 10px;
-  text-align: center;
-  min-width: 110px;
-  font-size: 13px;
-  font-weight: 500;
-}
-.tdGroup { font-size: 11px; }
-
-.arrivalRow td { border: 1.5px solid #444; }
-.tdArrival {
-  text-align: center;
-  padding: 6px;
   font-size: 12px;
+  white-space: pre-line;
+  min-width: 70px;
+}
+
+.tdArrival {
+  border: 1.5px solid #555;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.tdPeriod {
+  border: 1.5px solid #555;
+  padding: 4px 6px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  font-size: 11px;
+  min-width: 36px;
+}
+
+.tdTime {
+  border: 1.5px solid #555;
+  padding: 4px 6px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 10px;
+  color: #444;
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+.tdSubject {
+  border: 1.5px solid #555;
+  padding: 4px 8px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 12px;
+  min-width: 80px;
+}
+.tdSubjectFilled {
   font-weight: 600;
 }
 
@@ -67,10 +112,9 @@
 }
 .printBtn:hover { background: #1d4ed8; }
 
-/* 인쇄 전용 CSS */
 @media print {
   .printActions { display: none; }
   .printWrap { padding: 0; }
-  .printTable { font-size: 11px; }
-  .tdCell { min-width: 80px; }
+  .printTable { font-size: 10px; }
+  .tdSubject { min-width: 60px; }
 }

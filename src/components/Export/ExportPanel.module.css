@@ -1,0 +1,49 @@
+.panel {
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.gradeSelect {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.gradeOption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 11px;
+  color: #64748b;
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+
+.downloadBtn {
+  width: 100%;
+  padding: 10px;
+  background: #0f766e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.downloadBtn:hover:not(:disabled) { background: #0d9488; }
+.downloadBtn:disabled { opacity: 0.6; cursor: not-allowed; }

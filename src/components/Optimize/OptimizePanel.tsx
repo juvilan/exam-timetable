@@ -3,6 +3,7 @@ import { useExamStore } from '../../store/examStore';
 import type { ExamSession, GradeMatrix } from '../../types';
 import { parseSubjectMatrix } from '../../utils/xlsxImport';
 import { calcDaySizes } from '../../utils/gaEngine';
+import { assignSeating } from '../../utils/seatingEngine';
 import type { GaResult, GaWorkerMessage, GaConfig } from '../../utils/gaEngine';
 import styles from './OptimizePanel.module.css';
 
@@ -20,7 +21,7 @@ interface GradeOptState {
 }
 
 export function OptimizePanel({ session }: Props) {
-  const { setGradeMatrix, applyGaOrder, addSubject } = useExamStore();
+  const { setGradeMatrix, setSeatingResult, applyGaOrder, addSubject } = useExamStore();
 
   const [runState, setRunState]       = useState<RunState>('idle');
   const [errorMsg, setErrorMsg]       = useState('');
@@ -183,6 +184,15 @@ export function OptimizePanel({ session }: Props) {
               <button className={styles.importBtn} onClick={() => handleImportExcel(grade)}>
                 📥 Excel
               </button>
+              {gs.matrix?.students && (
+                <button className={styles.applyBtn} onClick={() => {
+                  const result = assignSeating(gs.matrix!);
+                  setSeatingResult(session.id, result);
+                  alert(`${grade}학년 응시반 편성 완료! ${result.rooms.length}반 배정`);
+                }}>
+                  🪑 응시반 편성
+                </button>
+              )}
               {gs.result && (
                 <button className={styles.applyBtn} onClick={() => handleApplyResult(grade)}>
                   배치 적용

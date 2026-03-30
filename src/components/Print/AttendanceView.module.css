@@ -1,0 +1,58 @@
+.gradeSection { margin-bottom: 32px; }
+
+.gradeHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 6px 6px 0 0;
+  font-size: 14px;
+}
+.meta { font-size: 12px; opacity: 0.8; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.th {
+  border: 1px solid #888;
+  padding: 4px 6px;
+  background: #f1f5f9;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.thSubj {
+  border: 1px solid #888;
+  padding: 4px 6px;
+  background: #f1f5f9;
+  text-align: center;
+  font-weight: 700;
+  font-size: 10px;
+  min-width: 52px;
+}
+.subjName { font-weight: 600; font-size: 10px; }
+
+.td {
+  border: 1px solid #ccc;
+  padding: 3px 5px;
+  text-align: center;
+  white-space: nowrap;
+}
+.tdName {
+  border: 1px solid #ccc;
+  padding: 3px 8px;
+  text-align: left;
+}
+.tdTakes {
+  background: #dbeafe;
+  color: #1e40af;
+  font-weight: 700;
+}
+
+@media print {
+  .table { font-size: 9px; }
+  .gradeSection { page-break-inside: avoid; }
+}

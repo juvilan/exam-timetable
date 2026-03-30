@@ -97,3 +97,39 @@
   border-bottom-color: var(--primary);
   background: var(--surface);
 }
+
+/* 인쇄 미리보기 탭 */
+.printTabs {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+.printTab {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  cursor: pointer;
+  color: var(--text-muted);
+}
+.printTab:hover:not(:disabled) { color: var(--text); }
+.printTab:disabled { opacity: 0.4; cursor: not-allowed; }
+.printTabActive {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.printBtnTop {
+  padding: 6px 14px;
+  background: #1e40af;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.printBtnTop:hover { background: #1d4ed8; }

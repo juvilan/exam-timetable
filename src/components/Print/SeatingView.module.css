@@ -1,0 +1,64 @@
+.gradeTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 16px 0 8px;
+}
+
+.roomsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.room {
+  border: 1.5px solid #888;
+  border-radius: 6px;
+  overflow: hidden;
+  min-width: 200px;
+}
+
+.roomHeader {
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.seatTable {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 11px;
+}
+
+.sth {
+  border: 1px solid #ccc;
+  padding: 3px 5px;
+  background: #f8fafc;
+  text-align: center;
+  font-weight: 600;
+}
+
+.std {
+  border: 1px solid #eee;
+  padding: 2px 5px;
+  text-align: center;
+}
+.stdName {
+  border: 1px solid #eee;
+  padding: 2px 8px;
+  text-align: left;
+}
+
+.deskLabel {
+  text-align: center;
+  padding: 4px;
+  font-size: 11px;
+  color: #666;
+  background: #f8fafc;
+  border-top: 1px solid #ddd;
+}
+
+@media print {
+  .room { page-break-inside: avoid; }
+  .roomsGrid { gap: 8px; }
+}

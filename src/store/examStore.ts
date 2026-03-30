@@ -2,10 +2,10 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type {
   ExamSession, Subject, SubjectGroup, GridCell, CellContent,
-  DayConfig, GradeConfig, SlotConfig, GaImportData, GradeMatrix,
+  DayConfig, GradeConfig, SlotConfig, GaImportData, GradeMatrix, SeatingResult,
 } from '../types';
 import { genId } from '../utils/id';
-import { createDefaultExamSession, defaultGradeConfig, defaultSlots, isSubjectActive } from '../utils/examDefaults';
+import { createDefaultExamSession, defaultGradeConfig, defaultSlots, defaultSlotsForGrade, makeSlotConfigs, DEFAULT_PERIOD_TIMES, isSubjectActive } from '../utils/examDefaults';
 
 // ============================================================
 // 스토어 타입
@@ -35,6 +35,7 @@ interface ExamStore {
   addDay: (sessionId: string) => void;
   updateDay: (sessionId: string, dayIdx: number, patch: Partial<DayConfig>) => void;
   removeDay: (sessionId: string, dayIdx: number) => void;
+  setDateRange: (sessionId: string, startDate: string, endDate: string) => void;
 
   // ── 학년 설정 ─────────────────────────────────────────────
   addGrade: (sessionId: string, grade: 1 | 2 | 3) => void;
@@ -43,6 +44,8 @@ interface ExamStore {
   updateSlot: (sessionId: string, gradeIdx: number, dayIdx: number, slotIdx: number, patch: Partial<SlotConfig>) => void;
   addSlot: (sessionId: string, gradeIdx: number, dayIdx: number) => void;
   removeSlot: (sessionId: string, gradeIdx: number, dayIdx: number, slotIdx: number) => void;
+  setPeriodTimeAll: (sessionId: string, periodIdx: number, patch: Partial<SlotConfig>) => void;
+  setGradePeriodCount: (sessionId: string, grade: 1 | 2 | 3, count: number) => void;
 
   // ── 과목 관리 ─────────────────────────────────────────────
   addSubject: (sessionId: string, subject: Omit<Subject, 'id'>) => string;
@@ -66,6 +69,9 @@ interface ExamStore {
 
   // ── 학생-과목 행렬 (GA 최적화용) ──────────────────────────
   setGradeMatrix: (sessionId: string, matrix: GradeMatrix) => void;
+
+  // ── 응시반 배정 결과 ──────────────────────────────────────
+  setSeatingResult: (sessionId: string, result: SeatingResult) => void;
 
   // ── JSON 내보내기/가져오기 ────────────────────────────────
   exportSession: (id: string) => string;
@@ -197,6 +203,32 @@ export const useExamStore = create<ExamStore>()(
         }));
       },
 
+      setDateRange: (sessionId, startDate, endDate) => {
+        // 평일(월~금)만 추출 (최대 10일)
+        const weekdays: string[] = [];
+        const d = new Date(startDate + 'T12:00:00');
+        const end = new Date(endDate + 'T12:00:00');
+        while (d <= end && weekdays.length < 10) {
+          const dow = d.getDay();
+          if (dow !== 0 && dow !== 6) weekdays.push(d.toISOString().slice(0, 10));
+          d.setDate(d.getDate() + 1);
+        }
+        if (weekdays.length === 0) return;
+        set(state => ({
+          sessions: updateSessionInList(state.sessions, sessionId, s => {
+            const newDays = weekdays.map(date => ({ id: genId('day'), date }));
+            const newGrades = s.grades.map(g => ({
+              ...g,
+              slotConfigs: weekdays.map((_, di) =>
+                g.slotConfigs[di] ?? g.slotConfigs[0] ?? defaultSlotsForGrade(g.grade)
+              ),
+            }));
+            const grid = s.grid.filter(c => c.dayIndex < weekdays.length);
+            return { ...s, days: newDays, grades: newGrades, grid };
+          }),
+        }));
+      },
+
       // ── 학년 설정 ───────────────────────────────────────
       addGrade: (sessionId, grade) => {
         set(state => ({
@@ -263,6 +295,54 @@ export const useExamStore = create<ExamStore>()(
               return { ...g, slotConfigs };
             });
             return { ...s, grades };
+          }),
+        }));
+      },
+
+      setPeriodTimeAll: (sessionId, periodIdx, patch) => {
+        set(state => ({
+          sessions: updateSessionInList(state.sessions, sessionId, s => {
+            const grades = s.grades.map(g => ({
+              ...g,
+              slotConfigs: g.slotConfigs.map(daySlots =>
+                daySlots.map((slot, si) => (si === periodIdx ? { ...slot, ...patch } : slot))
+              ),
+            }));
+            return { ...s, grades };
+          }),
+        }));
+      },
+
+      setGradePeriodCount: (sessionId, grade, count) => {
+        if (count < 1 || count > 4) return;
+        set(state => ({
+          sessions: updateSessionInList(state.sessions, sessionId, s => {
+            const gi = s.grades.findIndex(g => g.grade === grade);
+            if (gi < 0) return s;
+            const g = s.grades[gi];
+            const currentCount = g.slotConfigs[0]?.length ?? 0;
+            const grades = s.grades.map((gc, i) => {
+              if (i !== gi) return gc;
+              const slotConfigs = gc.slotConfigs.map(daySlots => {
+                if (daySlots.length === count) return daySlots;
+                if (daySlots.length > count) return daySlots.slice(0, count);
+                const extended = [...daySlots];
+                while (extended.length < count) {
+                  const pidx = extended.length;
+                  const ref = DEFAULT_PERIOD_TIMES[pidx] ?? DEFAULT_PERIOD_TIMES[3];
+                  const [h, m] = ref.startTime.split(':').map(Number);
+                  const total = h * 60 + m + ref.durationMin;
+                  const endTime = `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+                  extended.push({ period: pidx + 1, startTime: ref.startTime, endTime, durationMin: ref.durationMin });
+                }
+                return extended;
+              });
+              return { ...gc, slotConfigs };
+            });
+            const grid = count < currentCount
+              ? s.grid.filter(c => !(c.gradeIndex === gi && c.slotIndex >= count))
+              : s.grid;
+            return { ...s, grades, grid };
           }),
         }));
       },
@@ -473,6 +553,18 @@ export const useExamStore = create<ExamStore>()(
             gradeMatrices: {
               ...s.gradeMatrices,
               [String(matrix.grade)]: matrix,
+            },
+          })),
+        }));
+      },
+
+      setSeatingResult: (sessionId, result) => {
+        set(state => ({
+          sessions: updateSessionInList(state.sessions, sessionId, s => ({
+            ...s,
+            seatingResults: {
+              ...s.seatingResults,
+              [String(result.grade)]: result,
             },
           })),
         }));
