@@ -298,7 +298,7 @@ export function OptimizePanel({ session }: Props) {
           : <button
               className={styles.runBtn}
               onClick={handleRunOptimize}
-              disabled={runState === 'running'}
+              disabled={false}
             >
               ▶ 최적화 실행
             </button>

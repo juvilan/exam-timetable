@@ -5,7 +5,7 @@ import type {
   DayConfig, GradeConfig, SlotConfig, GaImportData, GradeMatrix, SeatingResult,
 } from '../types';
 import { genId } from '../utils/id';
-import { createDefaultExamSession, defaultGradeConfig, defaultSlots, defaultSlotsForGrade, makeSlotConfigs, DEFAULT_PERIOD_TIMES, isSubjectActive } from '../utils/examDefaults';
+import { createDefaultExamSession, defaultGradeConfig, defaultSlots, defaultSlotsForGrade, DEFAULT_PERIOD_TIMES, isSubjectActive } from '../utils/examDefaults';
 
 // ============================================================
 // 스토어 타입

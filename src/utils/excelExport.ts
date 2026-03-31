@@ -20,11 +20,12 @@ function cellLabel(
   const cell = session.grid.find(
     c => c.gradeIndex === gradeIndex && c.dayIndex === dayIndex && c.slotIndex === slotIndex
   );
-  if (!cell?.content) return '';
-  if (cell.content.type === 'single') {
-    return session.subjects.find(s => s.id === cell.content!.subjectId)?.name ?? '';
+  if (!cell || !cell.content) return '';
+  const content = cell.content;
+  if (content.type === 'single') {
+    return session.subjects.find(s => s.id === content.subjectId)?.name ?? '';
   }
-  return (cell.content as { type: 'group'; activeSubjectIds: string[] }).activeSubjectIds
+  return (content as { type: 'group'; activeSubjectIds: string[] }).activeSubjectIds
     .map(id => session.subjects.find(s => s.id === id)?.name ?? id)
     .join(' / ');
 }
@@ -65,9 +66,10 @@ function buildTimetableSheet(
         c => c.gradeIndex === gi && c.dayIndex === di && c.slotIndex === si
       );
       let label = '';
-      if (cell?.content) {
-        if (cell.content.type === 'single') {
-          const subj = session.subjects.find(s => s.id === cell.content!.subjectId);
+      if (cell && cell.content) {
+        const content = cell.content;
+        if (content.type === 'single') {
+          const subj = session.subjects.find(s => s.id === content.subjectId);
           label = subj?.name ?? '';
           if (withCommonTag && subj && isCommonSubject(session, subj.id)) {
             label += '\n[공통]';
@@ -162,7 +164,7 @@ function buildAttendanceSheet(
 function buildStatsSheet(
   session: ExamSession,
   gradeConfig: GradeConfig,
-  gi: number,
+  _gi: number,
   matrix: GradeMatrix | null
 ): XLSX.WorkSheet {
   const rows: unknown[][] = [];

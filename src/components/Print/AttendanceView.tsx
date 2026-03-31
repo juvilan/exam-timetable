@@ -6,13 +6,6 @@ interface Props {
   session: ExamSession;
 }
 
-/** 교시코드에서 dayIndex, slotIndex 추출 */
-function periodCodeToIndex(code: number): [number, number] {
-  const d = Math.floor(code / 10) - 1;
-  const s = (code % 10) - 1;
-  return [d, s];
-}
-
 /** 그리드에서 해당 학년의 배치 정보 수집: [{dayIdx, slotIdx, subjectName}] */
 function getGradeSchedule(session: ExamSession, gradeIndex: number) {
   const schedule: { dayIdx: number; slotIdx: number; label: string }[] = [];
@@ -21,12 +14,13 @@ function getGradeSchedule(session: ExamSession, gradeIndex: number) {
     const slots = gradeConfig.slotConfigs[di] ?? [];
     for (let si = 0; si < slots.length; si++) {
       const cell = session.grid.find(c => c.gradeIndex === gradeIndex && c.dayIndex === di && c.slotIndex === si);
-      if (!cell?.content) continue;
+      if (!cell || !cell.content) continue;
+      const content = cell.content;
       let label = '';
-      if (cell.content.type === 'single') {
-        label = session.subjects.find(s => s.id === cell.content!.subjectId)?.name ?? '';
+      if (content.type === 'single') {
+        label = session.subjects.find(s => s.id === content.subjectId)?.name ?? '';
       } else {
-        label = (cell.content as { type: 'group'; activeSubjectIds: string[] }).activeSubjectIds
+        label = (content as { type: 'group'; activeSubjectIds: string[] }).activeSubjectIds
           .map(id => session.subjects.find(s => s.id === id)?.name ?? id)
           .join('/');
       }

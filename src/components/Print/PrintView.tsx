@@ -62,7 +62,7 @@ export function PrintView({ session }: Props) {
             // 이 일차에 존재하는 모든 고유 시작시간 수집 → 정렬
             const allStartTimes = Array.from(
               new Set(
-                session.grades.flatMap((g, gi) =>
+                session.grades.flatMap((g) =>
                   (g.slotConfigs[di] ?? []).map(s => s.startTime)
                 )
               )
@@ -79,7 +79,7 @@ export function PrintView({ session }: Props) {
               | { kind: 'empty' };
 
             const grid: CellInfo[][] = allStartTimes.map((startTime, rowIdx) => {
-              return session.grades.map((gradeConfig, gi) => {
+              return session.grades.map((gradeConfig, _gi) => {
                 const slots = gradeConfig.slotConfigs[di] ?? [];
                 const arrivalMin = gradeConfig.arrivalTime ? timeToMin(gradeConfig.arrivalTime) : null;
                 const startMin   = timeToMin(startTime);

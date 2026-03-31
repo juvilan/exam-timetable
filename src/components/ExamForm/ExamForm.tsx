@@ -17,7 +17,6 @@ export function ExamForm() {
     openList, openEditor, updateSession,
     addGrade, removeGrade, updateGradeConfig,
     setDateRange, setPeriodTimeAll, setGradePeriodCount,
-    updateSlot,
   } = useExamStore();
 
   if (!session) return <NewSessionForm />;
@@ -29,7 +28,7 @@ export function ExamForm() {
 
   // 학년별 교시 수 (모든 날이 동일하다고 가정)
   function getPeriodCount(grade: 1 | 2 | 3): number {
-    const gc = session.grades.find(g => g.grade === grade);
+    const gc = session?.grades.find(g => g.grade === grade);
     return gc?.slotConfigs[0]?.length ?? 0;
   }
 
@@ -163,7 +162,7 @@ function DateRangeSection({
   setDateRange,
 }: {
   session: ReturnType<typeof useActiveSession>;
-  setDateRange: ReturnType<typeof useExamStore>['setDateRange'];
+  setDateRange: (sessionId: string, startDate: string, endDate: string) => void;
 }) {
   if (!session) return null;
 
@@ -175,7 +174,7 @@ function DateRangeSection({
   const [end,   setEnd]   = useState(lastDate);
 
   function apply() {
-    if (start && end && start <= end) setDateRange(session.id, start, end);
+    if (start && end && start <= end && session) setDateRange(session.id, start, end);
   }
 
   return (

@@ -1,3 +1,4 @@
+import React from 'react';
 import type { ExamSession, SeatingResult } from '../../types';
 import { GRADE_COLORS } from '../../types';
 import styles from './WaitingView.module.css';
@@ -21,16 +22,17 @@ export function WaitingView({ session }: Props) {
   /** 그리드에서 (gi, di, si)에 배치된 과목명 목록 반환 */
   function getSubjectNames(gi: number, di: number, si: number): string[] {
     const cell = session.grid.find(c => c.gradeIndex === gi && c.dayIndex === di && c.slotIndex === si);
-    if (!cell?.content) return [];
-    if (cell.content.type === 'single') {
-      const s = session.subjects.find(s => s.id === cell.content!.subjectId);
+    if (!cell || !cell.content) return [];
+    const content = cell.content;
+    if (content.type === 'single') {
+      const s = session.subjects.find(s => s.id === content.subjectId);
       return s ? [s.name] : [];
     }
-    return (cell.content as { type: 'group'; activeSubjectIds: string[] }).activeSubjectIds
+    return (content as { type: 'group'; activeSubjectIds: string[] }).activeSubjectIds
       .map(id => session.subjects.find(s => s.id === id)?.name ?? '').filter(Boolean);
   }
 
-  const sections: JSX.Element[] = [];
+  const sections: React.ReactElement[] = [];
 
   session.grades.forEach((gradeConfig, gi) => {
     const result: SeatingResult | undefined = seatingResults[String(gradeConfig.grade)];
@@ -52,7 +54,7 @@ export function WaitingView({ session }: Props) {
       const slots = gradeConfig.slotConfigs[di] ?? [];
       if (slots.length === 0) return;
 
-      slots.forEach((slot, si) => {
+      slots.forEach((_slot, si) => {
         // 이 교시에 배치된 과목명들
         const thisSubjects = getSubjectNames(gi, di, si);
 
