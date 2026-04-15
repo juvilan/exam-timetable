@@ -42,10 +42,7 @@ export function TimetableGrid({ session }: Props) {
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } })
   );
 
-  const maxSlots = Math.max(
-    ...session.grades.flatMap(g => g.slotConfigs.flatMap(day => day.length)),
-    0
-  );
+  const gradePeriodCounts = session.gradePeriodCounts ?? {};
 
   function getCell(gi: number, di: number, si: number): GridCell | undefined {
     return session.grid.find(c => c.gradeIndex === gi && c.dayIndex === di && c.slotIndex === si);
@@ -157,6 +154,11 @@ export function TimetableGrid({ session }: Props) {
               {session.grades.map((gradeConfig, gi) => {
                 const color = GRADE_COLORS[gradeConfig.grade];
 
+                const gradeSlotCount = gradePeriodCounts[gradeConfig.grade]
+                  ?? gradeConfig.slotConfigs[0]?.length
+                  ?? 2;
+                const sharedTimes = session.sharedPeriodStartTimes ?? [];
+
                 return (
                   <React.Fragment key={gi}>
                     {/* 시차등교 행 */}
@@ -177,11 +179,8 @@ export function TimetableGrid({ session }: Props) {
                     )}
 
                     {/* 교시 행 */}
-                    {Array.from({ length: maxSlots }).map((_, si) => {
-                      const hasAnySlot = session.grades.some(g => g.slotConfigs.some(day => day[si]));
-                      if (!hasAnySlot) return null;
-
-                      const slot = gradeConfig.slotConfigs[0]?.[si];
+                    {Array.from({ length: gradeSlotCount }).map((_, si) => {
+                      const startTime = sharedTimes[si] ?? gradeConfig.slotConfigs[0]?.[si]?.startTime ?? '';
 
                       return (
                         <tr key={`${gi}-${si}`} className={styles.slotRow}>
@@ -192,12 +191,11 @@ export function TimetableGrid({ session }: Props) {
                               </span>
                             )}
                             <span className={styles.periodLabel}>{si + 1}교시</span>
-                            {slot && <span className={styles.timeLabel}>{slot.startTime}~{slot.endTime}</span>}
+                            {startTime && <span className={styles.timeLabel}>{startTime}</span>}
                           </td>
 
                           {session.days.map((_day, di) => {
-                            const daySlot = gradeConfig.slotConfigs[di]?.[si];
-                            const cell    = getCell(gi, di, si);
+                            const cell = getCell(gi, di, si);
 
                             return (
                               <GridDropCell
@@ -206,7 +204,7 @@ export function TimetableGrid({ session }: Props) {
                                 dayIndex={di}
                                 slotIndex={si}
                                 cell={cell}
-                                isValidSlot={!!daySlot}
+                                isValidSlot={true}
                                 onClear={() => clearCell(session.id, gi, di, si)}
                                 contentToDisplay={contentToDisplay}
                                 gradeColor={color}

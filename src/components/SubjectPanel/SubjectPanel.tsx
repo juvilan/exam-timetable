@@ -355,6 +355,17 @@ function SubjectItem({
               onChange={e => onUpdate({ concentratedClass: e.target.value || null })}
             />
           </label>
+          <label className={styles.detailLabel}>
+            시험 시간(분)
+            <input
+              className={styles.detailInput}
+              type="number"
+              min={10}
+              max={200}
+              value={subject.durationMin ?? 50}
+              onChange={e => onUpdate({ durationMin: Number(e.target.value) })}
+            />
+          </label>
           <button className={styles.removeSubjectBtn} onClick={onRemove}>삭제</button>
         </div>
       )}
