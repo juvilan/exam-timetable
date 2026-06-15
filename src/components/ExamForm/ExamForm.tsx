@@ -23,8 +23,13 @@ export function ExamForm() {
 
   const gradeNumbers = [1, 2, 3] as const;
 
-  // 교시 시간: 첫 번째 학년의 슬롯을 기준으로 표시 (전 학년 공통)
-  const refSlots: SlotConfig[] = session.grades[0]?.slotConfigs[0] ?? [];
+  // 교시 시간: 전 학년 공통 — 교시 수가 가장 많은 학년의 슬롯을 기준으로 전체 교시를 표시
+  // (1학년처럼 교시 수가 적은 학년만 기준으로 삼으면 3·4교시 시작시간을 설정할 수 없음)
+  const refSlots: SlotConfig[] =
+    session.grades.reduce<typeof session.grades[number] | undefined>(
+      (best, g) => ((g.slotConfigs[0]?.length ?? 0) > (best?.slotConfigs[0]?.length ?? 0) ? g : best),
+      undefined,
+    )?.slotConfigs[0] ?? [];
 
   // 학년별 교시 수 (모든 날이 동일하다고 가정)
   function getPeriodCount(grade: 1 | 2 | 3): number {
