@@ -3,10 +3,10 @@ import { genId } from './id';
 
 /** 기본 교시 시작시간 (전 학년 공통, 최대 4교시) */
 export const DEFAULT_PERIOD_TIMES = [
-  { period: 1, startTime: '08:30', durationMin: 50 },
-  { period: 2, startTime: '09:40', durationMin: 50 },
-  { period: 3, startTime: '10:50', durationMin: 50 },
-  { period: 4, startTime: '12:00', durationMin: 50 },
+  { period: 1, startTime: '09:10', durationMin: 50 },
+  { period: 2, startTime: '10:30', durationMin: 50 },
+  { period: 3, startTime: '13:00', durationMin: 50 },
+  { period: 4, startTime: '14:10', durationMin: 50 },
 ];
 
 function addMinutes(time: string, mins: number): string {

@@ -42,13 +42,7 @@ export function TimetableGrid({ session }: Props) {
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } })
   );
 
-  // 전 학년 공통 교시 시작시간: 교시 수가 가장 많은 학년의 슬롯을 하루 전체 교시 기준으로 삼는다
-  const maxPeriods = Math.max(
-    ...session.grades.map(g => g.slotConfigs[0]?.length ?? 0),
-    0
-  );
-  const refGradeSlots =
-    session.grades.find(g => (g.slotConfigs[0]?.length ?? 0) === maxPeriods)?.slotConfigs[0] ?? [];
+  const gradePeriodCounts = session.gradePeriodCounts ?? {};
 
   function getCell(gi: number, di: number, si: number): GridCell | undefined {
     return session.grid.find(c => c.gradeIndex === gi && c.dayIndex === di && c.slotIndex === si);
@@ -160,9 +154,10 @@ export function TimetableGrid({ session }: Props) {
               {session.grades.map((gradeConfig, gi) => {
                 const color = GRADE_COLORS[gradeConfig.grade];
 
-                const gradeSlotCount = gradeConfig.slotConfigs[0]?.length ?? 0;
-                // 교시 수가 적은 학년은 하루의 뒤쪽(오후)에 맞춰 정렬 → 종료 시각 일치
-                const slotOffset = maxPeriods - gradeSlotCount;
+                const gradeSlotCount = gradePeriodCounts[gradeConfig.grade]
+                  ?? gradeConfig.slotConfigs[0]?.length
+                  ?? 2;
+                const sharedTimes = session.sharedPeriodStartTimes ?? [];
 
                 return (
                   <React.Fragment key={gi}>
@@ -185,11 +180,7 @@ export function TimetableGrid({ session }: Props) {
 
                     {/* 교시 행 */}
                     {Array.from({ length: gradeSlotCount }).map((_, si) => {
-                      // 끝에 맞춤: 1학년 1교시 = 2·3학년 3교시 시작시간
-                      const startTime =
-                        refGradeSlots[slotOffset + si]?.startTime
-                        ?? gradeConfig.slotConfigs[0]?.[si]?.startTime
-                        ?? '';
+                      const startTime = sharedTimes[si] ?? gradeConfig.slotConfigs[0]?.[si]?.startTime ?? '';
 
                       return (
                         <tr key={`${gi}-${si}`} className={styles.slotRow}>
