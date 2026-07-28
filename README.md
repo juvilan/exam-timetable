@@ -1,5 +1,10 @@
 # exam-timetable
 
+> ⚠️ **이건 운영 중인 시험 시간표 스케줄러가 아니다.**
+> 학교에서 실제로 쓰는 웹앱은 `~/Projects/school-tools/exam-scheduler-app/`이며
+> 라이브 주소는 **https://examtime.duckdns.org** 이다.
+> 이 저장소는 Google Apps Script 기반의 별개 실험 프로젝트다.
+
 시험 일정/시간표 관련 도구(앱) 프로젝트입니다.
 
 ## 목적
