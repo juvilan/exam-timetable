@@ -113,6 +113,8 @@ export type ExamSession = {
   grid: GridCell[];
   gradeMatrices: Partial<Record<string, GradeMatrix>>; // key = grade ("2", "3")
   seatingResults?: Partial<Record<string, SeatingResult>>; // key = grade ("2", "3")
+  gradePeriodCounts?: Partial<Record<1 | 2 | 3, number>>; // 학년별 교시 수 (TimetableGrid 표시용)
+  sharedPeriodStartTimes?: string[];                      // 교시별 공통 시작시간 (TimetableGrid 표시용)
   createdAt: string;
   updatedAt: string;
 };
